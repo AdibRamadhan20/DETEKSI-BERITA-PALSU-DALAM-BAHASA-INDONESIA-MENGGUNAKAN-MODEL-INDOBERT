@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Deteksi Berita Hoax</title>
+  <style>
+    body {
+      background-color: #f9f9f9;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      width: 100%;
+      max-width: 700px;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      background-color: #1E66F5;
+      color: white;
+      padding: 14px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      text-align: center;
+      justify-content: center;
+      display: flex;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .header p {
+      margin: 4px 0 0;
+      margin-left: 9px;
+      font-size: 13px;
+      font-weight: normal;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .judul {
+      font-weight: bold;
+      margin: 0 0 5px;
+    }
+
+    .konten {
+      font-weight: bold;
+      margin: 10px 0 5px;
+    }
+
+    input[type="text"],
+    textarea {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      background-color: #1E66F5;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 10px;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: fit-content;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .result {
+      padding: 15px;
+      border-radius: 6px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .result.true {
+      background-color: #2ecc71;
+      color: white;
+    }
+
+    .result.false {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .result.empty {
+      background-color: #ecf0f1;
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>📰 Deteksi Berita HOAX</h1>
+        <p>Model AI berbasis IndoBERT</p>
+      </div>
+    </div>
+
+    <form method="POST" action="/predict">
+      <label class="judul" for="judul">Judul Berita</label>
+      <input type="text" name="judul" id="judul" required value="{{ judul or '' }}">
+
+      <label class="konten" for="konten">Konten Berita</label>
+      <textarea name="konten" id="konten" rows="6" required>{{ konten or '' }}</textarea>
+
+      <button type="submit">Deteksi Sekarang</button>
+    </form>
+
+    {% if result %}
+    <div class="result {{ 'true' if result.is_true else 'false' }}">
+      {% if result.is_true %}
+      ✅ Berita ini terindikasi <strong>{{ result.label }}</strong>
+      {% else %}
+      ❌ Berita ini terindikasi <strong>{{ result.label }}</strong>
+      {% endif %}
+      <div style="font-weight: normal; margin-top: 6px;">Tingkat Keyakinan: {{ result.confidence }}</div>
+    </div>
+    {% else %}
+    <div class="result empty">
+      Output hasil deteksi akan muncul di sini.
+    </div>
+    {% endif %}
+  </div>
+</body>
+
+</html>
